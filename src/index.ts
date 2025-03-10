@@ -1,8 +1,15 @@
 import cors from "cors"
-
+import config from "./config"
 import express, { Request, Response } from 'express';
-if (process.env.NODE_ENV != "production")
-    require('dotenv').config()
+import dotenv from 'dotenv';
+import mongoose from "mongoose";
+
+
+if (process.env.NODE_ENV != "production") dotenv.config()
+
+mongoose.connect(config.CONNECTION_STRING as string).then(()=>{
+  console.log("connected")
+})
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,7 +18,7 @@ app.use(cors())
 
 app.use(express.json());
 
-app.use('/api', require('./routes/index'));
+//app.use('/api', require('./routes/index'));
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
