@@ -4,6 +4,7 @@ const schema = new mongoose.Schema({
     receivers: { type: [String], required: true },
     title: { type: String, required: true },
     text: { type: String, required: true },
+    mailType: {type: String, required:true},
     created_by: { type: mongoose.SchemaTypes.ObjectId, ref: 'User' }
   }, {
     versionKey: false,
