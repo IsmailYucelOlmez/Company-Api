@@ -1,4 +1,5 @@
-import { HTTP_CODES } from './../config/enum';
+
+
 export type CustomErrorType = {
     code: number,
     message: string,

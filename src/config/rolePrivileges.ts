@@ -1,24 +1,6 @@
 module.exports = {
-    privGroups: [
-        {
-            id: "USERS",
-            name: "User Permissions"
-        },
-        {
-            id: "ROLES",
-            name: "Role Permissions"
-        },
-        {
-            id: "CATEGORIES",
-            name: "Category Permissions"
-        },
-        {
-            id: "AUDITLOGS",
-            name: "AuditLogs Permissions"
-        }
-    ],
 
-    privileges: [
+    permissions: [
         {
             key: "user_view",
             name: "User View",

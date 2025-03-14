@@ -5,8 +5,6 @@ import dotenv from 'dotenv';
 import mongoose from "mongoose";
 var logger = require('morgan');
 
-
-
 if (process.env.NODE_ENV != "production") dotenv.config()
 
 mongoose.connect(config.CONNECTION_STRING as string).then(()=>{

@@ -12,3 +12,5 @@ router.post('/', (req:Request, res:Response) => {
     res.send('Post User Education!');
 });
 
+module.exports=router;
+

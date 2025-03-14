@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
+import UserController from "../controllers/UserController";
 
 const express = require('express');
 
 const router = express.Router();
 
-router.get('/', (req:Request, res:Response) => {
-  res.send('Hello World!');
-});
+router.get('/', UserController.getUsers);
 
 router.post('/', (req:Request, res:Response) => {
     res.send('Post User!');
@@ -20,4 +19,4 @@ router.delete('/', (req:Request, res:Response) => {
     res.send('Delete User!');
 });
 
-module.exports = router;
+module.exports=router;

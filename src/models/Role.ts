@@ -1,10 +1,9 @@
-import { create } from "domain";
 import mongoose from "mongoose";
-import RolePrivileges from "./RolePrivilege";
 
 const schema = new mongoose.Schema({
     role_name: {type: String, required: true},
     isActive: {type: Boolean, default: true},
+    permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Permission" }],
     created_by: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
 }, {
     versionKey: false,
@@ -21,14 +20,6 @@ type queryType = {
 
 class Roles extends mongoose.Model {
 
-    static async remove(query:queryType) {
-
-        if (query._id) {
-            await RolePrivileges.deleteOne({role_id: query._id});
-        }
-
-        await super.deleteOne(query);
-    }
 
 }
 

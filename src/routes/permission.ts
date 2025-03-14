@@ -1,21 +1,23 @@
+import express from "express";
 import { Request, Response } from "express";
-
-const express = require('express');
+//import { PermissionController } from "../controllers/permission";
 
 const router = express.Router();
 
 router.get('/', (req:Request, res:Response) => {
-  res.send('Hello World User Education!');
+  res.send('Get Permission!');
 });
 
 router.post('/', (req:Request, res:Response) => {
-    res.send('Post User Education!');
+    res.send('Post Permission!');
 });
 
 router.put('/', (req:Request, res:Response) => {
-    res.send('Put User Education!');
+    res.send('Put Permission!');
 });
 
 router.delete('/', (req:Request, res:Response) => {
-    res.send('Delete User Education!');
+    res.send('Delete Permission!');
 });
+
+module.exports=router;

@@ -19,3 +19,5 @@ router.put('/', (req:Request, res:Response) => {
 router.delete('/', (req:Request, res:Response) => {
     res.send('Delete User Education!');
 });
+
+module.exports=router;
