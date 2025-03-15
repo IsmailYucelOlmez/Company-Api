@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import is from "is_js";
-import { HTTP_CODES, PASS_LENGTH } from '../config/Enum';
+import { HTTP_CODES, PASS_LENGTH } from '../config/enum';
 import DEFAULT_LANG from "../config/index";
 import CustomError from "../lib/Error";
 import bcrypt from "bcrypt";

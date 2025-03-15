@@ -3,19 +3,13 @@ import ResponseClass from '../lib/Response'
 import CustomError, { CustomErrorType } from "../lib/Error";
 import userService from "../services/userService";
 import { HTTP_CODES } from "../config/enum";
+import roleService from "../services/roleService";
 
-const getUsers=(req:Request,res:Response)=>{
-
-    try {
-
-        const users=userService.getAllUsers();
-
-        return res.json(ResponseClass.successResponse(users));
+const getRoles=(req:Request,res:Response)=>{
         
-    } catch (err) {
-        let errorResponse = ResponseClass.errorResponse(err as CustomErrorType);
-        res.status(errorResponse.code).json(errorResponse);
-    }
+    const roles=roleService.getAll();
+
+    return res.json(ResponseClass.successResponse(roles));        
 }
 
 const getUserById=(req:Request,res:Response)=>{
@@ -73,4 +67,4 @@ const deleteUser=(req:Request,res:Response)=>{
     }
 }
 
-export default {getUsers,getUserById,createUser,updateUser,deleteUser}
+export default {getRoles}

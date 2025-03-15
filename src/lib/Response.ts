@@ -1,6 +1,6 @@
 import { CustomErrorType } from "./Error";
 
-const Enum = require("../config/Enum");
+const Enum = require("../config/enum");
 const config = require("../config");
 const CustomError = require("./Error");
 //const i18n = new (require("./i18n"))(config.DEFAULT_LANG);
