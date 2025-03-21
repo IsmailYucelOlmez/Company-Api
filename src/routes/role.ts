@@ -8,16 +8,12 @@ const router = express.Router();
 
 router.get('/', asyncWrapper(RoleController.getRoles));
 
-router.post('/', (req:Request, res:Response) => {
-    res.send('Post User Education!');
-});
+router.get('/:id', asyncWrapper(RoleController.getRoleById));
 
-router.put('/', (req:Request, res:Response) => {
-    res.send('Put User Education!');
-});
+router.post('/', asyncWrapper(RoleController.createRole));
 
-router.delete('/', (req:Request, res:Response) => {
-    res.send('Delete User Education!');
-});
+router.put('/', asyncWrapper(RoleController.updateRole));
+
+router.delete('/', asyncWrapper(RoleController.deleteRole));
 
 module.exports=router;

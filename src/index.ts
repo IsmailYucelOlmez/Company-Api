@@ -1,20 +1,16 @@
 import cors from "cors"
-import config from "./config"
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import mongoose from "mongoose";
-var logger = require('morgan');
+import Database from "./config/db";
+import { CONNECTION_STRING } from "./config";
+dotenv.config()
 
-if (process.env.NODE_ENV != "production") dotenv.config()
-
-mongoose.connect(config.CONNECTION_STRING as string).then(()=>{
-  console.log("connected")
-})
+const dbInstance = new Database(); 
+dbInstance.connect(CONNECTION_STRING);
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(logger('dev'));
 app.use(cors())
 
 app.use(express.json());

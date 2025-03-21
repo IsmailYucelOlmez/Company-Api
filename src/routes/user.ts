@@ -1,22 +1,19 @@
 import { Request, Response } from "express";
 import UserController from "../controllers/UserController";
+import { asyncWrapper } from "../lib/AsyncWrapper";
 
 const express = require('express');
 
 const router = express.Router();
 
-router.get('/', UserController.getUsers);
+router.get('/', asyncWrapper(UserController.getUsers));
 
-router.post('/', (req:Request, res:Response) => {
-    res.send('Post User!');
-});
+router.get('/:id', asyncWrapper(UserController.getUserById));
 
-router.put('/', (req:Request, res:Response) => {
-    res.send('Put User!');
-});
+router.post('/', asyncWrapper(UserController.createUser));
 
-router.delete('/', (req:Request, res:Response) => {
-    res.send('Delete User!');
-});
+router.put('/', asyncWrapper(UserController.updateUser));
+
+router.delete('/', asyncWrapper(UserController.deleteUser));
 
 module.exports=router;

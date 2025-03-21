@@ -1,4 +1,4 @@
-import { Model, Document } from "mongoose";
+import mongoose, { Model, Document } from "mongoose";
 
 class GenericService<T> {
     protected model: Model<T>;
@@ -8,23 +8,26 @@ class GenericService<T> {
     }
 
     async getAll(): Promise<T[] | null> {
-        return this.model.find();
+        return await this.model.find();
     }
 
     async getById(id: string): Promise<T | null> {
-        return this.model.findById(id);
+        return await this.model.findById(id);
     }
 
     async create(data: Partial<T>): Promise<T> {
-        return this.model.create(data);
+        const modelData=new this.model(data);
+        await modelData.save()
+        
+        return modelData
     }
 
     async update(id: string, data: Partial<T>): Promise<T | null> {
-        return this.model.findByIdAndUpdate(id, data, { new: true });
+        return await this.model.findByIdAndUpdate(id, data, { new: true });
     }
 
     async delete(id: string): Promise<T | null> {
-        return this.model.findByIdAndDelete(id);
+        return await this.model.findByIdAndDelete(id);
     }
 }
 

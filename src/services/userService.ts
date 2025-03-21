@@ -1,43 +1,20 @@
 import { ObjectId } from "mongoose";
-import User from "../models/User"
+import User, { IUser } from "../models/User"
+import GenericService from "./GenericService";
 
 
-const getAllUsers=async()=>{
-
-    const users=await User.find({}, { password: 0 }).populate('roleId');
-
-    return users;
-}
-
-const getUserById=async(userId:ObjectId)=>{
-
-    const user=await User.findById({id:userId})
-
-    return user;
-}
-
-
-const postUser=async(user:typeof User,id:ObjectId)=>{
-
-    const existingUser=await User.findOne({_id:id});
-
-    if(existingUser) { 
-         
-        return existingUser;
+class UserService extends GenericService<IUser> {
+    constructor() {
+        super(User);
     }
 
-    const newUser=new User(user);
-    await newUser.save();
+    getAllWithoutPassword=async()=>{
 
-    return newUser
+        const users=await User.find({}, { password: 0 }).populate('roleId');
+
+        return users;
+    }
 }
 
-const updateUser=()=>{
+export default new UserService();
 
-}
-
-const deleteUser=()=>{
-
-}
-
-export default { getAllUsers,getUserById, postUser, updateUser, deleteUser}

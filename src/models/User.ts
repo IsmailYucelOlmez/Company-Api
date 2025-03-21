@@ -1,12 +1,24 @@
 import mongoose, { Schema } from 'mongoose';
 import is from "is_js";
 import { HTTP_CODES, PASS_LENGTH } from '../config/enum';
-import DEFAULT_LANG from "../config/index";
+import {DEFAULT_LANG} from "../config/index";
 import CustomError from "../lib/Error";
 import bcrypt from "bcrypt";
 
+export interface IUser {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    phoneNumber?: string;
+    gitHub?: string;
+    linkedIn?: string;
+    roleId?: mongoose.Schema.Types.ObjectId;
+    language?: string;
+    isActive?: boolean;
+}
 
-const UserSchema: Schema = new Schema({
+const UserSchema: Schema = new Schema<IUser>({
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, trim: true, },
@@ -43,7 +55,7 @@ class Users extends mongoose.Model {
 UserSchema.loadClass(Users);
 
 
-const User=mongoose.model('User', UserSchema);
+const User=mongoose.model<IUser>('User', UserSchema, 'users');
 
 export default User
 

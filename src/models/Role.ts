@@ -31,6 +31,6 @@ class Roles extends mongoose.Model {
 }
 
 schema.loadClass(Roles);
-const Role = mongoose.model<IRole>('Role', schema);
+const Role = mongoose.model<IRole>('Role', schema,'roles');
 
 export default Role;
