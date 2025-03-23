@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
 
-const schema = new mongoose.Schema({
+export interface ICategory {
+    name: string;
+    is_active?: boolean;
+    created_by?: mongoose.Schema.Types.ObjectId;
+}
+
+const schema = new mongoose.Schema<ICategory>({
     name: {type: String, required: true},
     is_active: { type: Boolean, default: true },
-    created_by: { type: mongoose.SchemaTypes.ObjectId }
+    created_by: { type: mongoose.SchemaTypes.ObjectId, requied:true }
 }, {
     versionKey: false,
     timestamps: {
@@ -17,5 +23,5 @@ class Categories extends mongoose.Model {
 }
 
 schema.loadClass(Categories);
-const Category = mongoose.model('Category', schema);
+const Category = mongoose.model<ICategory>('Category', schema);
 export default Category;

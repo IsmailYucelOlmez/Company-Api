@@ -12,8 +12,8 @@ router.get('/:id', asyncWrapper(RoleController.getRoleById));
 
 router.post('/', asyncWrapper(RoleController.createRole));
 
-router.put('/', asyncWrapper(RoleController.updateRole));
+router.put('/:id', asyncWrapper(RoleController.updateRole));
 
-router.delete('/', asyncWrapper(RoleController.deleteRole));
+router.delete('/:id', asyncWrapper(RoleController.deleteRole));
 
 module.exports=router;

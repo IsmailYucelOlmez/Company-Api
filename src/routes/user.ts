@@ -12,8 +12,8 @@ router.get('/:id', asyncWrapper(UserController.getUserById));
 
 router.post('/', asyncWrapper(UserController.createUser));
 
-router.put('/', asyncWrapper(UserController.updateUser));
+router.put('/:id', asyncWrapper(UserController.updateUser));
 
-router.delete('/', asyncWrapper(UserController.deleteUser));
+router.delete('/:id', asyncWrapper(UserController.deleteUser));
 
 module.exports=router;
