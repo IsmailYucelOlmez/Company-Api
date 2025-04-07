@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { Request, Response } from "express";
 import UserController from "../controllers/UserController";
 import { asyncWrapper } from "../lib/AsyncWrapper";
 import ResponseClass from "../lib/Response";
-import { HTTP_CODES, PASS_LENGTH, SUPER_ADMIN } from "../config/enum";
+import { HTTP_CODES, PASS_LENGTH } from "../config/enum";
 import User from "../models/User";
-import CustomError, { CustomErrorType } from "../lib/Error";
+import CustomError from "../lib/Error";
 import { DEFAULT_LANG, JWT } from "../config";
 const bcrypt = require('bcrypt');
 const express = require('express');
@@ -13,10 +15,10 @@ const jwt = require("jwt-simple");
 const router = express.Router();
 
 router.post("/register", async (req:Request, res:Response) => {
-    let body = req.body;
+    const body = req.body;
     try {
   
-      let user = await User.findOne({});
+      const user = await User.findOne({});
   
       if (user) {
         return res.sendStatus(HTTP_CODES.NOT_FOUND);
@@ -32,7 +34,7 @@ router.post("/register", async (req:Request, res:Response) => {
         throw new CustomError({code:HTTP_CODES.BAD_REQUEST, message:"Validation Error!", description:"password length must be greater than " + PASS_LENGTH});
       }
   
-      let password = bcrypt.hashSync(body.password, bcrypt.genSaltSync(8), null);
+      const password = bcrypt.hashSync(body.password, bcrypt.genSaltSync(8), null);
   
       let createdUser = await User.create({
         email: body.email,
@@ -47,7 +49,7 @@ router.post("/register", async (req:Request, res:Response) => {
       res.status(HTTP_CODES.CREATED).json(ResponseClass.successResponse({ success: true }, HTTP_CODES.CREATED));
   
     } catch (err:any) {
-      let errorResponse = ResponseClass.errorResponse({code:err.code || 401,message:err.message, description:err.description },req.user.language);
+      const errorResponse = ResponseClass.errorResponse({code:err.code || 401,message:err.message, description:err.description },req.user.language);
       res.status(errorResponse.code).json(errorResponse);
     }
   })

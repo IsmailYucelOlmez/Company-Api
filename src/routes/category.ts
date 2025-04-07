@@ -1,7 +1,7 @@
 import { asyncWrapper } from "../lib/AsyncWrapper";
 import CategoryController from "../controllers/CategoryController";
 
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 

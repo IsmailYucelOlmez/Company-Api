@@ -1,6 +1,6 @@
+/* eslint-disable prefer-const */
 import { Request,Response } from "express";
 import ResponseClass from '../lib/Response'
-import CustomError, { CustomErrorType } from "../lib/Error";
 import { HTTP_CODES } from "../config/enum";
 import RoleService from "../services/roleService";
 import roleService from "../services/roleService";
@@ -35,7 +35,7 @@ const createRole=async(req:Request,res:Response)=>{
     
     const result=await RoleService.create(role)
 
-    return res.status(HTTP_CODES.CREATED).json(ResponseClass.successResponse({success:true}, HTTP_CODES.CREATED));
+    return res.status(HTTP_CODES.CREATED).json(ResponseClass.successResponse({data:result, success:true}, HTTP_CODES.CREATED));
 }
 
 const updateRole=async(req:Request,res:Response)=>{
@@ -53,7 +53,7 @@ const updateRole=async(req:Request,res:Response)=>{
 
     const result=await RoleService.update(body._id,updates)
 
-    return res.json(ResponseClass.successResponse({ success: true }));
+    return res.json(ResponseClass.successResponse({ data:result, success: true }));
 }
 
 const deleteRole=async(req:Request,res:Response)=>{

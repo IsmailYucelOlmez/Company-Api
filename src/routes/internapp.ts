@@ -1,7 +1,7 @@
 import { asyncWrapper } from "../lib/AsyncWrapper";
 import InternAppController from "../controllers/InternAppController";
 
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { CustomErrorType } from "./Error";
 
 const Enum = require("../config/enum");

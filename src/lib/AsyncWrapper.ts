@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { Request, Response } from "express";
 import ResponseClass from "./Response";
 import { CustomErrorType } from "./Error";
@@ -7,7 +8,7 @@ export const asyncWrapper = (fn: Function) => {
         try {
             await fn(req, res, next);
         } catch (err) {
-            let errorResponse = ResponseClass.errorResponse(err as CustomErrorType);
+            const errorResponse = ResponseClass.errorResponse(err as CustomErrorType, /*req.user.language*/);
             res.status(errorResponse.code).json(errorResponse);
         }
     };

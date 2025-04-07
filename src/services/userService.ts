@@ -1,4 +1,3 @@
-import { ObjectId } from "mongoose";
 import User, { IUser } from "../models/User"
 import GenericService from "./GenericService";
 

@@ -1,15 +1,24 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable prefer-const */
 import { Request, Response } from "express";
 import ResponseClass from '../lib/Response'
 import categoryService from "../services/categoryService";
 import CustomError from "../lib/Error";
 import { HTTP_CODES } from "../config/enum";
 import { DEFAULT_LANG } from "../config";
+import { log } from "console";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const i18n = new (require("../lib/i18n"))(DEFAULT_LANG);
+const logger = require('./logger');
 
 
 const getCategories=async(req:Request,res:Response)=>{
 
-    let categories = await categoryService.getAll();
+    const categories = await categoryService.getAll();
+
+    if(!categories || categories.length === 0) throw new CustomError({code:HTTP_CODES.NOT_FOUND,message: i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language),description: i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["categories"])});
+        
+    logger.info(`Categories fetched: ${categories.length}`);
 
     return res.json(ResponseClass.successResponse(categories));
 }
@@ -21,6 +30,10 @@ const getCategoryById=async(req:Request,res:Response)=>{
     //if(!categoryId) throw new CustomError({code:HTTP_CODES.BAD_REQUEST,message: i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language),description: i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["id"])});
 
     const category=await categoryService.getById(categoryId);
+
+    if(!category) throw new CustomError({code:HTTP_CODES.NOT_FOUND,message: i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language),description: i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["category"])});
+
+    logger.info(`Category Updated: ${categoryId}`);
 
     return res.json(ResponseClass.successResponse(category))
 
@@ -35,7 +48,9 @@ const createCategory=async(req:Request,res:Response)=>{
 
     const result=await categoryService.create(body);
 
-    return res.json(ResponseClass.successResponse({ success: true }));
+    logger.info(`Category Created: ${result}`);
+
+    return res.json(ResponseClass.successResponse({ result:result, success: true }));
 }
 
 const updateCategory=async(req:Request,res:Response)=>{
@@ -55,7 +70,9 @@ const updateCategory=async(req:Request,res:Response)=>{
 
     const result =await categoryService.update(categoryId,updates)
 
-    res.json(ResponseClass.successResponse({success:true}))
+    logger.info(`Category Updated: ${categoryId}`);
+
+    res.json(ResponseClass.successResponse({result:result, success:true}))
 }
 
 const deleteCategory=async(req:Request,res:Response)=>{
@@ -67,7 +84,9 @@ const deleteCategory=async(req:Request,res:Response)=>{
 
     const result=await categoryService.delete(categoryId);
 
-    return res.json(ResponseClass.successResponse({success:true}))
+    logger.info(`Category Deleted: ${categoryId}`);
+
+    return res.json(ResponseClass.successResponse({result:result, success:true}))
 
 }
 

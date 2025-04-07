@@ -1,4 +1,4 @@
-import mongoose, { Model, Document } from "mongoose";
+import { Model } from "mongoose";
 
 class GenericService<T> {
     protected model: Model<T>;

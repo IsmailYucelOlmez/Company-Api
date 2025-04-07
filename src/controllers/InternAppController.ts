@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable prefer-const */
 import { Request, Response } from "express";
 import ResponseClass from '../lib/Response'
 import internappService from "../services/internAppService";
-import CustomError from "../lib/Error";
 import { HTTP_CODES } from "../config/enum";
 import { DEFAULT_LANG } from "../config";
 const i18n = new (require("../lib/i18n"))(DEFAULT_LANG);
@@ -35,7 +36,7 @@ const createInternApp=async(req:Request,res:Response)=>{
 
     const result=await internappService.create(body);
 
-    return res.json(ResponseClass.successResponse({ success: true }));
+    return res.json(ResponseClass.successResponse({result:result, success: true }));
 }
 
 const updateInternApp=async(req:Request,res:Response)=>{
@@ -55,7 +56,7 @@ const updateInternApp=async(req:Request,res:Response)=>{
 
     const result =await internappService.update(internappId,updates)
 
-    res.json(ResponseClass.successResponse({success:true}))
+    res.json(ResponseClass.successResponse({result:result, success:true}))
 }
 
 const deleteInternApp=async(req:Request,res:Response)=>{
@@ -67,7 +68,7 @@ const deleteInternApp=async(req:Request,res:Response)=>{
 
     const result=await internappService.delete(internappId);
 
-    return res.json(ResponseClass.successResponse({success:true}))
+    return res.json(ResponseClass.successResponse({result:result, success:true}))
 
 }
 
