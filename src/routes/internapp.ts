@@ -1,23 +1,26 @@
-import { Request, Response } from "express";
+import { asyncWrapper } from "../lib/AsyncWrapper";
+import InternAppController from "../controllers/InternAppController";
 
 const express = require('express');
 
 const router = express.Router();
 
-router.get('/', (req:Request, res:Response) => {
-  res.send('Hello World User Education!');
-});
+router.get('/', asyncWrapper(InternAppController.getInternApps));
 
-router.post('/', (req:Request, res:Response) => {
-    res.send('Post User Education!');
-});
+router.get('/:id', asyncWrapper(InternAppController.getInternAppById));
 
-router.put('/', (req:Request, res:Response) => {
-    res.send('Put User Education!');
-});
+router.post('/', asyncWrapper(InternAppController.createInternApp));
 
-router.delete('/', (req:Request, res:Response) => {
-    res.send('Delete User Education!');
-});
+router.put('/:id', asyncWrapper(InternAppController.updateInternApp));
+
+router.delete('/:id', asyncWrapper(InternAppController.deleteInternApp));
+
+router.get('/statistics/university', asyncWrapper(InternAppController.getCountByUniversity));
+
+router.get('/statistics/category', asyncWrapper(InternAppController.getCountByCategory));
+
+router.get('/statistics/date', asyncWrapper(InternAppController.getCountByMonth));
+
+router.get('/statistics/duration', asyncWrapper(InternAppController.getCountByDuration));
 
 module.exports=router;

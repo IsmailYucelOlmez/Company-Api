@@ -8,12 +8,16 @@ class UserService extends GenericService<IUser> {
         super(User);
     }
 
-    getAllWithoutPassword=async()=>{
-
-        const users=await User.find({}, { password: 0 }).populate('roleId');
-
+    async getAll(): Promise<IUser[]> {
+        const users = await User.find({}, { password: 0 }).populate('roleId');
         return users;
     }
+
+    async getById(id: string): Promise<IUser | null> {
+        const user = await User.findById(id, { password: 0 }).populate('roleId');
+        return user;
+    }
+
 }
 
 export default new UserService();

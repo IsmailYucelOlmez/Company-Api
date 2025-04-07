@@ -16,6 +16,9 @@ export interface IUser {
     roleId?: mongoose.Schema.Types.ObjectId;
     language?: string;
     isActive?: boolean;
+
+    validPassword(password: string): boolean;
+    validateFieldsBeforeAuth(email: string, password: string): typeof CustomError | null;
 }
 
 const UserSchema: Schema = new Schema<IUser>({
