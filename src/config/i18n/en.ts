@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     COMMON: {
         VALIDATION_ERROR_TITLE: "Validation Error",
         ALREADY_EXIST: "Already Exists!",

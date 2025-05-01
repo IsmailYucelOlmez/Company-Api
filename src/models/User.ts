@@ -40,6 +40,8 @@ const UserSchema: Schema = new Schema<IUser>({
     }
 });
 
+
+
 class Users extends mongoose.Model {
 
     validPassword(password:string):boolean {

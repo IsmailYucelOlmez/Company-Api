@@ -20,10 +20,6 @@ const schema = new mongoose.Schema<IRole>({
     }
 });
 
-type queryType = {
-    _id: mongoose.Types.ObjectId,
-}
-
 
 class Roles extends mongoose.Model {
 

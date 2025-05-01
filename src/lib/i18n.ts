@@ -1,17 +1,18 @@
-const i18n = require("../config/i18n");
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import i18n from "../config/i18n";
 
-class I18n {
+export default class I18n {
     private lang:string
 
 	constructor(lang:string) {
-    this.lang = lang;
+        this.lang = lang;
 	}
 
-	translate(text:string, lang = this.lang, params = []) {
+	translate(text:string, lang = this.lang, params:string[]=[]) {
 
-    let arr = text.split("."); // COMMON.VALIDATION_ERROR_TITLE => ['COMMON','VALIDATION_ERROR_TITLE']
+    const arr = text.split("."); // COMMON.VALIDATION_ERROR_TITLE => ['COMMON','VALIDATION_ERROR_TITLE']
 
-    let val = i18n[lang][arr[0]]; // i18n["EN"]["COMMON"];
+    let val = (i18n as Record<string, any>)[lang][arr[0]]; // i18n["EN"]["COMMON"];
 
     for (let i = 1; i < arr.length; i++) {
         val = val[arr[i]]; // i=1 için; va["VALIDATION_ERROR_TITLE"]
@@ -27,6 +28,4 @@ class I18n {
 
     return val || "";
 	}
-	}
-	
-	module.exports = I18n;
+}

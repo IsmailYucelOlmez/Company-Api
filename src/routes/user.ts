@@ -7,10 +7,27 @@ import ResponseClass from "../lib/Response";
 import { HTTP_CODES, PASS_LENGTH } from "../config/enum";
 import User from "../models/User";
 import CustomError from "../lib/Error";
-import { DEFAULT_LANG, JWT } from "../config";
+import { CONNECTION_STRING, DEFAULT_LANG, JWT } from "../config";
+import rateLimit from "express-rate-limit";
+import I18n from "../lib/i18n";
+const RateLimitMongo = require("rate-limit-mongo");
 const bcrypt = require('bcrypt');
 const express = require('express');
 const jwt = require("jwt-simple");
+
+const i18n = new I18n(DEFAULT_LANG);
+
+const limiter = rateLimit({
+  store: new RateLimitMongo({
+    uri: CONNECTION_STRING,
+    collectionName: "rateLimits",
+    expireTimeMs: 15 * 60 * 1000 // 15 minutes
+  }),
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  // standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+});
 
 const router = express.Router();
 
@@ -34,22 +51,25 @@ router.post("/register", async (req:Request, res:Response) => {
         throw new CustomError({code:HTTP_CODES.BAD_REQUEST, message:"Validation Error!", description:"password length must be greater than " + PASS_LENGTH});
       }
   
-      const password = bcrypt.hashSync(body.password, bcrypt.genSaltSync(8), null);
+      const hashedPassword = bcrypt.hashSync(body.password, bcrypt.genSaltSync(8), null);
   
-      let createdUser = await User.create({
+      const createdUser = await User.create({
         email: body.email,
-        password,
+        password:hashedPassword,
         is_active: true,
         first_name: body.first_name,
         last_name: body.last_name,
-        phone_number: body.phone_number
+        phone_number: body.phone_number,
+        linkedIn: body.linkedIn,
+        gitHub: body.gitHub,
+        roleId: body.roleId,
       });
   
   
-      res.status(HTTP_CODES.CREATED).json(ResponseClass.successResponse({ success: true }, HTTP_CODES.CREATED));
+      res.status(HTTP_CODES.CREATED).json(ResponseClass.successResponse({ success: true, result:createdUser }, HTTP_CODES.CREATED));
   
     } catch (err:any) {
-      const errorResponse = ResponseClass.errorResponse({code:err.code || 401,message:err.message, description:err.description },req.user.language);
+      const errorResponse = ResponseClass.errorResponse({code:err.code || 401,message:err.message, description:err.description },(req.user as any).language || DEFAULT_LANG);
       res.status(errorResponse.code).json(errorResponse);
     }
   })
@@ -57,33 +77,33 @@ router.post("/register", async (req:Request, res:Response) => {
   router.post("/auth", limiter, async (req:Request, res:Response) => {
     try {
   
-      let { email, password } = req.body;
+      const { email, password } = req.body;
   
-      User.validateFieldsBeforeAuth(email, password);
+      (User as any).validateFieldsBeforeAuth(email, password);
   
-      let user = await User.findOne({ email });
+      const user = await User.findOne({ email });
   
       if (!user) throw new CustomError({code:HTTP_CODES.UNAUTHORIZED,message: i18n.translate("COMMON.VALIDATION_ERROR_TITLE", DEFAULT_LANG),description: i18n.translate("USERS.AUTH_ERROR", DEFAULT_LANG)});
   
       if (!user.validPassword(password)) throw new CustomError({code:HTTP_CODES.UNAUTHORIZED,message: i18n.translate("COMMON.VALIDATION_ERROR_TITLE", DEFAULT_LANG),description: i18n.translate("USERS.AUTH_ERROR", DEFAULT_LANG)});
   
-      let payload = {
+      const payload = {
         id: user._id,
-        exp: parseInt(Date.now() / 1000) + JWT.EXPIRE_TIME
+        exp: parseInt((Date.now() / 1000).toString()) + JWT.EXPIRE_TIME,
       }
   
-      let token = jwt.encode(payload, JWT.SECRET);
+      const token = jwt.encode(payload, JWT.SECRET);
   
-      let userData = {
+      const userData = {
         _id: user._id,
         first_name: user.firstName,
-        last_name: user.lastName
+        last_name: user.lastName,
       }
   
       res.json(ResponseClass.successResponse({ token, user: userData }));
   
     } catch (err:any) {
-      let errorResponse = ResponseClass.errorResponse({code:err.code, message:err.message,description:err.description}, req.user.language);
+      const errorResponse = ResponseClass.errorResponse({code:err.code, message:err.message,description:err.description}, (req.user as any).language || DEFAULT_LANG);
       res.status(errorResponse.code).json(errorResponse);
     }
 })

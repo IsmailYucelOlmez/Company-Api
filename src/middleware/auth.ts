@@ -1,43 +1,34 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
-
-const passport = require("passport");
-const { ExtractJwt, Strategy } = require("passport-jwt");
+import passport from "passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
 import User from "../models/User";
-const UserRoles = require("../db/models/UserRoles");
-const RolePrivileges = require("../db/models/RolePrivileges");
 import ResponseClass from "../lib/Response";
 import { HTTP_CODES } from "../config/enum";
+import {DEFAULT_LANG, JWT} from "../config";
+import CustomError from "../lib/Error";
+import Role from "../models/Role";
 
-const config = require("../config");
-
-const privs = require("../config/role_privileges");
-const CustomError = require("./Error");
 
 module.exports = function () {
-    let strategy = new Strategy({
-        secretOrKey: config.JWT.SECRET,
+    const strategy = new Strategy({
+        secretOrKey: JWT.SECRET,
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
     }, async (payload:any, done:any) => {
         try {
 
-            let user = await User.findOne({ _id: payload.id });
+            const user = await User.findOne({ _id: payload.id });
 
             if (user) {
-
-                let userRoles = await UserRoles.find({ user_id: payload.id });
-
-                let rolePrivileges = await RolePrivileges.find({ role_id: { $in: userRoles.map(ur => ur.role_id) } });
-
-                let privileges = rolePrivileges.map(rp => privs.privileges.find(x => x.key == rp.permission))
-
+                             
                 done(null, {
                     id: user._id,
-                    roles: privileges,
+                    role: user.roleId,
                     email: user.email,
                     first_name: user.firstName,
                     last_name: user.lastName,
                     language: user.language,
-                    exp: parseInt(Date.now() / 1000) + config.JWT.EXPIRE_TIME
+                    exp: parseInt((Date.now() / 1000).toString()) + JWT.EXPIRE_TIME
                 });
 
             } else {
@@ -59,19 +50,27 @@ module.exports = function () {
         authenticate: function () {
             return passport.authenticate("jwt", { session: false })
         },
-        checkRoles: (...expectedRoles:string[]) => {
-            return (req:Request, res:Response, next: NextFunction) => {
-
-                let i = 0;
-                let privileges = req.user.roles.filter(x => x).map(x => x.key);
-
-                while (i < expectedRoles.length && !privileges.includes(expectedRoles[i])) i++;
-
-                if (i >= expectedRoles.length) {
-                    let response = ResponseClass.errorResponse(new CustomError(HTTP_CODES.UNAUTHORIZED, "Need Permission", "Need Permission"), req.user.language);
+        checkRoles: (expectedPermission:string) => {
+            return async (req:Request, res:Response, next: NextFunction) => {
+                
+                if(!expectedPermission) {
+                    const response = ResponseClass.errorResponse(new CustomError({ code: HTTP_CODES.UNAUTHORIZED, message: "Role not found", description: "Role not found" }), req.user?.language || DEFAULT_LANG);
                     return res.status(response.code).json(response);
                 }
+                
+                const role = await Role.findOne({ _id: req.user?.role }).populate("permissions"); 
+                const permissionNames = role?.permissions.map((permission:any) => permission.name);
 
+                if (!permissionNames ) {
+                    const response = ResponseClass.errorResponse(new CustomError({ code: HTTP_CODES.UNAUTHORIZED, message: "Role not found", description: "Role not found" }), req.user?.language || DEFAULT_LANG);
+                    return res.status(response.code).json(response);
+                }             
+
+                if (permissionNames && permissionNames.includes(expectedPermission)) {
+                    const response = ResponseClass.errorResponse(new CustomError({ code: HTTP_CODES.UNAUTHORIZED, message: "Role not found", description: "Role not found" }), req.user?.language || DEFAULT_LANG);
+                    return res.status(response.code).json(response);
+                }
+           
                 return next(); 
 
             }
