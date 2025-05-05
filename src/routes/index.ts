@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+const router = express.Router();
 
-const fs = require("fs");
+import fs from "fs";
 
-let routes = fs.readdirSync(__dirname);
+const routes = fs.readdirSync(__dirname);
 
-for (let route of routes) {
+for (const route of routes) {
   if (route.includes(".ts") && route != "index.ts") {
     router.use("/"+route.replace(".ts", ""), require('./'+route));
   }

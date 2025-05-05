@@ -16,6 +16,7 @@ export interface IUser {
     roleId?: mongoose.Schema.Types.ObjectId;
     language?: string;
     isActive?: boolean;
+    refreshTokens?: string[];
 
     validPassword(password: string): boolean;
     validateFieldsBeforeAuth(email: string, password: string): typeof CustomError | null;
@@ -31,7 +32,8 @@ const UserSchema: Schema = new Schema<IUser>({
     linkedIn: { type: String, trim: true },
     roleId: { type: Schema.Types.ObjectId, ref: 'Role' },
     language: { type: String, default: DEFAULT_LANG },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    refreshTokens: { type: [String], default: [] },
 }, {
     versionKey: false,
     timestamps: {
